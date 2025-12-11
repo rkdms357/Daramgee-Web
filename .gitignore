@@ -37,3 +37,8 @@ build/
 ### Mac OS ###
 .DS_Store
 
+# Tomcat context.xml (DB 연결 정보)
+src/main/webapp/META-INF/context.xml
+
+# Oracle DB properties (계정 + 비밀번호)
+src/main/resources/oracleDB.properties
