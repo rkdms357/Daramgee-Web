@@ -61,11 +61,11 @@
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 <main>
-    <img src="/Daramgee-Web/images/Daramgee.png" class="mascot" alt="다람쥐 캐릭터">
+    <img src="${pageContext.request.contextPath}/images/Daramgee.png" class="mascot" alt="다람쥐 캐릭터">
     <h1>투자, 어렵지 않게</h1>
     <p>내 돈 잃지 않고 배우는 안전한 가상화폐 투자 연습장</p>
     <div class="btn-area">
-        <a href="/Daramgee-Web/member/login" class="btn-primary">지금 시작하기</a>
+        <a href="${pageContext.request.contextPath}/member/login" class="btn-primary">지금 시작하기</a>
     </div>
 </main>
 </body>
