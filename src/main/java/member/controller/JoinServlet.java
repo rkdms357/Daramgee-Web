@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import com.google.gson.Gson;
@@ -49,9 +50,11 @@ public class JoinServlet extends HttpServlet {
         }
 
         MemberDTO member = new MemberDTO();
+        BigDecimal initialCash = new BigDecimal("1000000.00000000");
+        member.setCash(initialCash);
         member.setUserId(userId);
         member.setPassword(password);
-        member.setCash(1000000);
+        member.setCash(initialCash);
         String msg = memberService.insertService(member);
 
         res.put("success", true);
