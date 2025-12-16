@@ -19,7 +19,7 @@ public class AssetServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<AssetDTO> list = assetService.getAllAssets();
         request.setAttribute("assets", list);
-        RequestDispatcher rd = request.getRequestDispatcher("/asset/asset.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/common/coinresult.jsp");
         rd.forward(request, response);
     }
 }

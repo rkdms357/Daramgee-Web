@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <html>
@@ -19,6 +19,7 @@
             justify-content: center;
             align-items: center;
             min-height: calc(100vh - 80px);
+            padding: 40px 0;
         }
 
         .asset-container {
@@ -39,6 +40,7 @@
             font-weight: 600;
             margin-bottom: 30px;
             display: block;
+            text-align: center;
         }
 
         .asset-table {
@@ -70,6 +72,9 @@
             font-weight: bold;
             color: #111;
         }
+
+        .rate-up { color: #cc0000; }
+        .rate-down { color: #0055ff; }
 
         .asset-table td[colspan="4"] {
             text-align: center;
@@ -118,12 +123,13 @@
 <%@ include file="/WEB-INF/views/common/header.jsp"%>
 <main>
     <div class="asset-container">
-        <p class="page-title">코인 실시간 시세</p>
+        <p class="page-title">실시간 코인 시세</p>
         <table class="asset-table">
             <thead>
             <tr>
                 <th>코인명</th>
-                <th>현재가</th>
+                <th>약어</th>
+                <th class="price-col">현재가 (KRW)</th>
                 <th>전일 대비</th>
             </tr>
             </thead>
@@ -133,10 +139,13 @@
                     <c:forEach var="asset" items="${assets}">
                         <tr>
                             <td>${asset.name}</td>
+                            <td>${asset.symbol}</td>
                             <td class="price-col">
-                                <fmt:formatNumber value="${asset.currentPrice}" type="number" /> 원
+                                <fmt:formatNumber value="${asset.currentPrice}" type="number" maxFractionDigits="0"/> 원
                             </td>
-                            <td>${asset.changeRate}%</td>
+                            <td class="${asset.changeRate >= 0 ? 'rate-up' : 'rate-down'}">
+                                    ${asset.changeRate}%
+                            </td>
                         </tr>
                     </c:forEach>
                 </c:when>
@@ -149,8 +158,8 @@
             </tbody>
         </table>
         <div class="trade-group">
-            <a href="${pageContext.request.contextPath}/trade/" class="btn-primary">매수하기</a>
-            <a href="${pageContext.request.contextPath}/trade/" class="btn-secondary">매도하기</a>
+            <a href="${pageContext.request.contextPath}/trade/buy" class="btn-primary">매수하기</a>
+            <a href="${pageContext.request.contextPath}/trade/sell" class="btn-secondary">매도하기</a>
         </div>
     </div>
 </main>
