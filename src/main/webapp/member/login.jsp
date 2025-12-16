@@ -116,8 +116,7 @@
 <main>
     <div class="login-box">
         <h1>로그인</h1>
-        <form id="loginForm" action="${pageContext.request.contextPath}/member" method="post">
-            <input type="hidden" name="action" value="login">
+        <form id="loginForm" action="${pageContext.request.contextPath}/member/login" method="post">
             <div class="input-group">
                 <label>아이디
                     <input id="userId" type="text" name="userId" value="${userId}">
@@ -162,7 +161,7 @@
         <div id="msg" class="msg"></div>
         <div class="join-link">
             아직 회원이 아니신가요?
-            <a href="${pageContext.request.contextPath}/member?action=join">회원가입</a>
+            <a href="${pageContext.request.contextPath}/member/join">회원가입</a>
         </div>
     </div>
 </main>

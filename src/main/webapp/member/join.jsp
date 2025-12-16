@@ -89,8 +89,7 @@
 <main>
     <div class="join-box">
         <h1>회원가입</h1>
-        <form id="joinForm" action="${pageContext.request.contextPath}/member" method="post">
-            <input type="hidden" name="action" value="join">
+        <form id="joinForm" action="${pageContext.request.contextPath}/member/join" method="post">
             <div class="input-group">
                 <label>아이디
                     <input id="userId" type="text" name="userId" value="${userId}">
