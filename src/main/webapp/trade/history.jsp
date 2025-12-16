@@ -79,6 +79,27 @@
         .price-col {
             text-align: right;
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #333;
+            border-radius: 4px;
+        }
+
+        .pagination a.active {
+            background-color: #ffb300;
+            color: white;
+            border-color: #ffb300;
+        }
     </style>
 </head>
 <body>
@@ -127,6 +148,19 @@
                 </div>
             </c:otherwise>
         </c:choose>
+    </div>
+    <div class="pagination">
+        <c:if test="${currentPage > 1}">
+            <a href="?page=${currentPage - 1}">이전</a>
+        </c:if>
+
+        <c:forEach var="i" begin="1" end="${totalPages}">
+            <a href="?page=${i}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+        </c:forEach>
+
+        <c:if test="${currentPage < totalPages}">
+            <a href="?page=${currentPage + 1}">다음</a>
+        </c:if>
     </div>
 </main>
 </body>

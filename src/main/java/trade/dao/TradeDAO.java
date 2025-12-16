@@ -185,17 +185,29 @@ public class TradeDAO {
         return result;
     }
 
-    // 4. 거래 내역 전체 조회
-    public List<TradeDTO> selectAll(String userId) {
+    // 4-1. 거래 내역 전체 조회
+    public List<TradeDTO> selectAll(String userId, int page) {
         List<TradeDTO> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement st = null;
         ResultSet rs = null;
-        String sql = "select * from trade where user_id = ? order by trade_date desc";
+
+        int pageSize = 15;
+        // 시작 번호와 끝 번호 계산 (1페이지: 1~15, 2페이지: 16~30)
+        int startRow = (page - 1) * pageSize + 1;
+        int endRow = page * pageSize;
+
+        String sql = "select * from (" +
+                "  select a.*, ROWNUM rnum from (" +
+                "    select * from trade where user_id = ? order by trade_date desc" +
+                "  ) a" +
+                ") where rnum between ? and ?";
         try {
             conn = DBUtil.dbconnect();
             st = conn.prepareStatement(sql);
             st.setString(1, userId);
+            st.setInt(2, startRow);
+            st.setInt(3, endRow);
             rs = st.executeQuery();
             while (rs.next()) {
                 TradeDTO t = new TradeDTO();
@@ -213,5 +225,28 @@ public class TradeDAO {
             DBUtil.dbDisconnect(conn, st, rs);
         }
         return list;
+    }
+
+    // 4-2. 전체 거래 기록 개수 조회 (총 페이지 수 계산용)
+    public int getTotalCount(String userId) {
+        int count = 0;
+        Connection conn = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        String sql = "select count(*) from trade where user_id = ?";
+        try {
+            conn = DBUtil.dbconnect();
+            st = conn.prepareStatement(sql);
+            st.setString(1, userId);
+            rs = st.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.dbDisconnect(conn, st, rs);
+        }
+        return count;
     }
 }

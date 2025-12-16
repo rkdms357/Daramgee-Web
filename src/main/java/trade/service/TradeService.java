@@ -77,7 +77,11 @@ public class TradeService {
         }
     }
 
-    public List<TradeDTO> getTradeHistory(String userId) {
-        return tradeDAO.selectAll(userId);
+    public List<TradeDTO> getTradeHistoryPaging(String userId, int page) {
+        return tradeDAO.selectAll(userId, page);
+    }
+
+    public int getTotalTradeCount(String userId) {
+        return tradeDAO.getTotalCount(userId);
     }
 }
