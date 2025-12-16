@@ -11,8 +11,12 @@ import java.math.BigDecimal;
 public class AssetDTO {
 
     private String assetId;
-    private String symbol;
     private String name;
     private BigDecimal currentPrice;
     private double changeRate;
+
+    public String getSymbol() {
+        if (assetId == null || !assetId.contains("-")) return "";
+        return assetId.split("-")[1];
+    }
 }

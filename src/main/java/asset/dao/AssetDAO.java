@@ -25,7 +25,6 @@ public class AssetDAO {
             while (rs.next()) {
                 AssetDTO asset = new AssetDTO();
                 asset.setAssetId(rs.getString("asset_id"));
-                asset.setSymbol(rs.getString("symbol"));
                 asset.setName(rs.getString("name"));
                 asset.setCurrentPrice(rs.getBigDecimal("current_price"));
                 list.add(asset);

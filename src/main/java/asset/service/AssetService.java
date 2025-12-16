@@ -24,18 +24,18 @@ public class AssetService {
         if (list == null || list.isEmpty()) return list;
 
         // 2. symbol만 추출
-        List<String> symbols = list.stream()
-                .map(AssetDTO::getSymbol)
+        List<String> assetIds = list.stream()
+                .map(AssetDTO::getAssetId)
                 .collect(Collectors.toList());
 
         // 3. 빗썸 API 1회 호출
-        Map<String, PriceDTO> priceMap = coinService.getPriceAndRate(symbols);
+        Map<String, PriceDTO> priceMap = coinService.getPriceAndRate(assetIds);
 
         // 4. 변경된 자산만 수집
         List<AssetDTO> updateTargets = new ArrayList<>();
 
         for (AssetDTO asset : list) {
-            PriceDTO info = priceMap.get(asset.getSymbol());
+            PriceDTO info = priceMap.get(asset.getAssetId());
             if (info == null) continue;
 
             BigDecimal newPrice = info.getPrice();
