@@ -26,7 +26,7 @@ public class MainServlet extends HttpServlet {
         if (loginUser != null) {
             List<AssetDTO> assets = assetService.getAllAssets();
             request.setAttribute("assets", assets);
-            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/common/coinresult.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("/main/main.jsp");
             rd.forward(request, response);
         } else {
             RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
