@@ -25,8 +25,7 @@ public class MemberDAO {
                 member = new MemberDTO();
                 member.setUserId(rs.getString("user_id"));
                 member.setPassword(rs.getString("password"));
-                //member.setPoints(rs.getInt("points"));
-                member.setCash(rs.getInt("cash"));
+                member.setCash(rs.getBigDecimal("cash"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,7 +47,7 @@ public class MemberDAO {
             st.setString(1, member.getUserId());
             st.setString(2, member.getPassword());
             //st.setInt(3, member.getPoints());
-            st.setInt(3, member.getCash());
+            st.setBigDecimal(3, member.getCash());
             int result = st.executeUpdate();
             if (result > 0) {
                 msg = "회원가입 되었습니다.";

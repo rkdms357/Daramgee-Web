@@ -5,19 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.math.BigDecimal;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-
 public class MemberDTO {
 
-    @NonNull String userId;
-    @NonNull String password;
-    //int points;
-    int cash;
+    @NonNull private String userId;
+    @NonNull private String password;
+    private BigDecimal cash;
 
     @Override
     public String toString() {
-        return String.format("보유 투자금 : %,d", cash);
+        return "보유 투자금 : " + String.format("%,d", cash.toBigInteger());
     }
 }
