@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -166,4 +167,10 @@
     </div>
 </main>
 </body>
+<c:if test="${not empty sessionScope.msg}">
+    <script>
+        alert("${fn:escapeXml(sessionScope.msg)}");
+    </script>
+    <c:remove var="msg" scope="session"/>
+</c:if>
 </html>
