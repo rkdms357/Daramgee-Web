@@ -5,9 +5,11 @@
     <title>투자초보다!람쥐</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/coinresult.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/quiz.css">
 </head>
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp"%>
+<%@ include file="/WEB-INF/views/quiz/quiz.jsp"%>
 <%@ include file="/WEB-INF/views/common/coinresult.jsp"%>
 </body>
 </html>
