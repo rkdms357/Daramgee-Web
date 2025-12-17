@@ -5,6 +5,7 @@
     <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>투자초보다!람쥐</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/quiz.css">
     <style>
         body {
             margin: 0;
@@ -14,8 +15,9 @@
         }
 
         .mascot {
+            margin-top: 80px;
+            margin: 80px 0px 20px 0px;
             width: 220px;
-            margin-bottom: 30px;
         }
 
         main {
@@ -25,6 +27,7 @@
             align-items: center;
             height: calc(100vh - 80px);
             text-align: center;
+            margin-bottom: 80px;
         }
 
         main h1 {
@@ -60,6 +63,7 @@
 </head>
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
+<%@ include file="/WEB-INF/views/quiz/quiz.jsp"%>
 <main>
     <img src="${pageContext.request.contextPath}/images/Daramgee.png" class="mascot" alt="다람쥐 캐릭터">
     <h1>투자, 어렵지 않게</h1>
