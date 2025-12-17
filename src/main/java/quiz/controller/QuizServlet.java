@@ -10,6 +10,7 @@ import member.dto.MemberDTO;
 import quiz.dto.QuizDTO;
 import quiz.service.QuizService;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 @WebServlet("/quiz")
 public class QuizServlet extends HttpServlet {
@@ -20,34 +21,27 @@ public class QuizServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         MemberDTO loginUser = (session != null) ? (MemberDTO) session.getAttribute("loginUser") : null;
 
-        // 로그인 체크
-        if (loginUser == null) {
-            session.setAttribute("msg", "로그인이 필요한 서비스입니다. 퀴즈를 맞히고 10만원을 받으세요!");
-            response.sendRedirect(request.getContextPath() + "/member/login");
-            return;
+        // 로그인 여부만 JSP에 전달
+        boolean needLogin = (loginUser == null);
+        request.setAttribute("needLogin", needLogin);
+
+        // 기본값 (비로그인 or 아직 안 품)
+        boolean canSolve = true;
+        boolean isSolved = false;
+
+        // 로그인한 경우만 중복 체크
+        if (!needLogin) {
+            canSolve = quizService.canSolveQuiz(loginUser.getUserId());
+            isSolved = !canSolve;
         }
 
-        String userId = loginUser.getUserId();
+        request.setAttribute("canSolve", canSolve);
+        request.setAttribute("isSolved", isSolved);
 
-        // 2. 중복 참여 체크
-        if (!quizService.canSolveQuiz(userId)) {
-            request.setAttribute("msg", "오늘은 이미 참여하셨습니다. 내일 또 오세요! 🐿️");
-            request.setAttribute("isSolved", true); // JSP에서 버튼 등을 비활성화할 용도
-        } else {
-            // 3. 문제 출제
+        // 아직 풀 수 있을 때만 문제 내려줌
+        if (canSolve) {
             QuizDTO quiz = quizService.getQuiz();
-            if (quiz == null) {
-                request.setAttribute("msg", "준비된 퀴즈가 없습니다.");
-            } else {
-                request.setAttribute("quiz", quiz);
-            }
-        }
-
-        // 결과 메시지(POST 후 전달된 메시지) 처리
-        String quizResult = (String) session.getAttribute("quizResult");
-        if (quizResult != null) {
-            request.setAttribute("quizResult", quizResult);
-            session.removeAttribute("quizResult");
+            request.setAttribute("quiz", quiz);
         }
 
         request.getRequestDispatcher("/WEB-INF/views/quiz/quiz.jsp").forward(request, response);
@@ -59,6 +53,7 @@ public class QuizServlet extends HttpServlet {
         MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
 
         if (loginUser == null) {
+            session.setAttribute("msg", "로그인이 필요한 서비스입니다. 퀴즈를 맞히고 10만원을 받으세요!");
             response.sendRedirect(request.getContextPath() + "/member/login");
             return;
         }
@@ -70,8 +65,16 @@ public class QuizServlet extends HttpServlet {
         // 정답 제출 및 보상 지급
         String resultMsg = quizService.submitAnswer(loginUser.getUserId(), quizId, userAnswer, realAnswer);
 
+        // 정답이면 세션 cash 값도 갱신
+        if (userAnswer.equals(realAnswer)) {
+            BigDecimal reward = new BigDecimal("100000");     // 10만원
+            loginUser.setCash(loginUser.getCash().add(reward));   // 기존 cash + 100000
+            session.setAttribute("loginUser", loginUser);
+            session.setAttribute("loginUser", loginUser);   // 세션 갱신
+        }
+
         // [PRG 패턴] 결과 메시지를 세션에 담고 다시 GET으로 리다이렉트
         session.setAttribute("quizResult", resultMsg);
-        response.sendRedirect(request.getContextPath() + "/quiz");
+        response.sendRedirect(request.getContextPath() + "/");
     }
 }

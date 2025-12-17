@@ -89,10 +89,12 @@ public class QuizDAO {
         int result = 0;
         try {
             conn = DBUtil.dbconnect();
+            conn.setAutoCommit(false);
             st = conn.prepareStatement(sql);
             st.setInt(1, amount);
             st.setString(2, userId);
             result = st.executeUpdate();
+            conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

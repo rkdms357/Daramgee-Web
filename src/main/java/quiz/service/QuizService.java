@@ -25,13 +25,10 @@ public class QuizService {
             correctYn = "Y";
             quizDAO.giveReward(userId, 100000); // 10만원 지급!
             msg = "정답입니다! 투자 지원금 100,000원이 입금되었습니다.";
+            quizDAO.insertLog(userId, quizId, correctYn);
         } else {
-            correctYn = "N";
             msg = "땡! 오답입니다. (정답: " + realAnswer + "번)";
         }
-
-        // 기록 남기기
-        quizDAO.insertLog(userId, quizId, correctYn);
         return msg;
     }
 }
