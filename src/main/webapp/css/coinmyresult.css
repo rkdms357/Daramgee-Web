@@ -1,0 +1,48 @@
+.table-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+}
+
+.portfolio-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+}
+
+.portfolio-table th {
+    background-color: #e6ffe6;
+    color: #1e8449;
+    font-weight: 600;
+    border-top: 2px solid #1e8449;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.portfolio-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    font-size: 15px;
+}
+
+.portfolio-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.price-col {
+    text-align: right; font-weight: bold;
+}
+
+.profit {
+    color: #e74c3c;
+    font-weight: 700;
+}
+
+.loss {
+    color: #3498db;
+    font-weight: 700;
+}
