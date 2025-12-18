@@ -37,7 +37,12 @@ public class MainServlet extends HttpServlet {
         request.setAttribute("canSolve", canSolve);
         request.setAttribute("isSolved", isSolved);
 
-        request.getRequestDispatcher("/index.jsp").forward(request, response);
+        if (loginUser != null) {
+            request.setAttribute("assets", assetService.getAllAssets());
+            request.getRequestDispatcher("/main/main.jsp").forward(request, response);
+        } else {
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
+        }
     }
 }
 
