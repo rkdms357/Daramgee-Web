@@ -13,11 +13,11 @@
                 <th>전일 대비</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="asset-tbody">
             <c:choose>
                 <c:when test="${not empty assets}">
-                    <c:forEach var="asset" items="${assets}">
-                        <tr>
+                    <c:forEach var="asset" items="${assets}" varStatus="status">
+                        <tr class="${status.count > 8 ? 'more-row' : ''}" style="${status.count > 8 ? 'display:none;' : ''}">
                             <td>${asset.name}</td>
                             <td>${asset.symbol}</td>
                             <td class="price-col">
@@ -37,5 +37,29 @@
             </c:choose>
             </tbody>
         </table>
+        <div class="trade-group">
+            <button id="toggle-btn" class="btn-secondary">더보기</button>
+        </div>
     </div>
 </main>
+<script>
+    const toggleBtn = document.querySelector("#toggle-btn");
+    let expanded = false;
+    toggleBtn.addEventListener("click", function () {
+        const moreRows = document.querySelectorAll(".more-row");
+        if (!expanded) {
+            // 더보기
+            moreRows.forEach(row => row.style.display = "table-row");
+            toggleBtn.textContent = "닫기";
+        } else {
+            // 닫기
+            moreRows.forEach(row => row.style.display = "none");
+            toggleBtn.textContent = "더보기";
+            // 스크롤 위치도 위로
+            document.querySelector(".asset-container")
+                .scrollIntoView({ behavior: "smooth" });
+        }
+        expanded = !expanded;
+    });
+</script>
+
