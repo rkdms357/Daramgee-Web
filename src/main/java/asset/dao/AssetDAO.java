@@ -17,7 +17,7 @@ public class AssetDAO {
         Connection conn = null;
         PreparedStatement st = null;
         ResultSet rs = null;
-        String sql = "select * from asset order by name";
+        String sql = "select asset_id, name, current_price, change_rate from asset order by name";
         try {
             conn = DBUtil.dbconnect();
             st = conn.prepareStatement(sql);
@@ -27,6 +27,7 @@ public class AssetDAO {
                 asset.setAssetId(rs.getString("asset_id"));
                 asset.setName(rs.getString("name"));
                 asset.setCurrentPrice(rs.getBigDecimal("current_price"));
+                asset.setChangeRate(rs.getDouble("change_rate"));
                 list.add(asset);
             }
         } catch (SQLException e) {
@@ -38,31 +39,19 @@ public class AssetDAO {
     }
 
     // 2. 가격, 변화율 업데이트 (Batch Update)
-    public void batchUpdatePriceAndRate(List<AssetDTO> assets) {
+    public void batchUpdatePriceAndRate(Connection conn, List<AssetDTO> assets) {
         if (assets == null || assets.isEmpty()) return;
         String sql = "update asset set current_price = ?, change_rate = ? where asset_id = ?";
-        Connection conn = null;
-        PreparedStatement ps = null;
-        try {
-            conn = DBUtil.dbconnect();
-            conn.setAutoCommit(false);
-            ps = conn.prepareStatement(sql);
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (AssetDTO asset : assets) {
-                ps.setBigDecimal(1, asset.getCurrentPrice());                ps.setDouble(2, asset.getChangeRate());
+                ps.setBigDecimal(1, asset.getCurrentPrice());
+                ps.setDouble(2, asset.getChangeRate());
                 ps.setString(3, asset.getAssetId());
                 ps.addBatch();
             }
             ps.executeBatch();
-            conn.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                if (conn != null) conn.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        } finally {
-            DBUtil.dbDisconnect(conn, ps, null);
+            throw new RuntimeException(e);
         }
     }
 }

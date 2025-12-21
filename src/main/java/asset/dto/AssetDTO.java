@@ -3,6 +3,8 @@ package asset.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
 import java.math.BigDecimal;
 
 @NoArgsConstructor
@@ -10,10 +12,10 @@ import java.math.BigDecimal;
 @Data
 public class AssetDTO {
 
-    private String assetId;
-    private String name;
-    private BigDecimal currentPrice;
-    private double changeRate;
+    @NonNull private String assetId;
+    @NonNull private String name;
+    @NonNull private BigDecimal currentPrice;
+    @NonNull private double changeRate;
 
     public String getSymbol() {
         if (assetId == null || !assetId.contains("-")) return "";

@@ -4,8 +4,10 @@ import asset.dao.AssetDAO;
 import asset.dto.AssetDTO;
 import coin.dto.PriceDTO;
 import coin.service.CoinService;
+import util.DBUtil;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +52,27 @@ public class AssetService {
             asset.setChangeRate(newRate);
             updateTargets.add(asset);
         }
-        // 5. DB Batch Update (1회)
-        assetDAO.batchUpdatePriceAndRate(updateTargets);
+        // 트랜잭션
+        if (!updateTargets.isEmpty()) {
+            Connection conn = null;
+            try {
+                conn = DBUtil.dbconnect();
+                conn.setAutoCommit(false);
+
+                assetDAO.batchUpdatePriceAndRate(conn, updateTargets);
+
+                conn.commit();
+            } catch (Exception e) {
+                try {
+                    if (conn != null) conn.rollback();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                e.printStackTrace();
+            } finally {
+                DBUtil.dbDisconnect(conn, null, null);
+            }
+        }
         return list;
     }
 }
