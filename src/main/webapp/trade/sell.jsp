@@ -148,20 +148,22 @@
         <p class="page-title">코인 매도</p>
         <%@ include file="/WEB-INF/views/common/coinmyresult.jsp" %>
     </div>
-    <div class="container">
-        <p class="table-title" style="border-bottom: none;">매도 주문 실행</p>
-        <form action="${pageContext.request.contextPath}/trade/sell" method="post" class="trade-form">
-            <div class="form-row">
-                <label for="symbol">매도할 코인 약어</label>
-                <input type="text" id="symbol" name="symbol" placeholder="예: BTC 또는 ETH" required>
-            </div>
-            <div class="form-row">
-                <label for="count">매도 수량</label>
-                <input type="number" id="count" name="count" placeholder="보유 수량 내에서 입력" min="1" required>
-            </div>
-            <button type="submit" class="btn-submit">매도 실행</button>
-        </form>
-    </div>
+    <c:if test="${not empty myList}">
+        <div class="container">
+            <p class="table-title" style="border-bottom: none;">매도 주문 실행</p>
+            <form action="${pageContext.request.contextPath}/trade/sell" method="post" class="trade-form">
+                <div class="form-row">
+                    <label for="symbol">매도할 코인 약어</label>
+                    <input type="text" id="symbol" name="symbol" placeholder="예: BTC 또는 ETH" required>
+                </div>
+                <div class="form-row">
+                    <label for="count">매도 수량</label>
+                    <input type="number" id="count" name="count" placeholder="보유 수량 내에서 입력" min="1" required>
+                </div>
+                <button type="submit" class="btn-submit">매도 실행</button>
+            </form>
+        </div>
+    </c:if>
 </main>
 </body>
 </html>

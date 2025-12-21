@@ -51,7 +51,7 @@ public class DeleteServlet extends HttpServlet {
         session.invalidate();
 
         res.put("success", true);
-        res.put("msg", "회원탈퇴가 완료되었습니다.");
+        res.put("msg", msg);
         out.print(gson.toJson(res));
     }
 }
