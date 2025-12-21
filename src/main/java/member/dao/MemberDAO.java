@@ -14,7 +14,7 @@ public class MemberDAO {
         Connection conn = null;
         PreparedStatement st = null;
         ResultSet rs = null;
-        String sql = "select * from users where user_id = ?";
+        String sql = "select user_id, password, cash from users where user_id = ?";
         MemberDTO member = null;
         try {
             conn = DBUtil.dbconnect();
@@ -46,7 +46,6 @@ public class MemberDAO {
             st = conn.prepareStatement(sql);
             st.setString(1, member.getUserId());
             st.setString(2, member.getPassword());
-            //st.setInt(3, member.getPoints());
             st.setBigDecimal(3, member.getCash());
             int result = st.executeUpdate();
             if (result > 0) {
@@ -63,53 +62,45 @@ public class MemberDAO {
     }
 
     // 3. 회원 탈퇴
-    public String delete(String userId) {
-        String msg = null;
-        Connection conn = null;
-        PreparedStatement st = null;
-        try {
-            conn = DBUtil.dbconnect();
-            conn.setAutoCommit(false); //트랜잭션 시작
-
-            // 자식 데이터 삭제
-            String sql1 = "delete from trade where user_id = ?";
-            st = conn.prepareStatement(sql1);
-            st.setString(1, userId);
-            st.executeUpdate();
-            st.close();
-
-            // 자식 데이터 삭제 (보유 코인)
-            String sql2 = "delete from portfolio where user_id = ?";
-            st = conn.prepareStatement(sql2);
-            st.setString(1, userId);
-            st.executeUpdate();
-            st.close();
-
-            // 자식 데이터 삭제 (퀴즈 기록)
-            String sql3 = "delete from quiz_log where user_id = ?";
-            st = conn.prepareStatement(sql3);
-            st.setString(1, userId);
-            st.executeUpdate();
-            st.close();
-
-            // 부모(회원) 삭제
-            String sql4 = "delete from users where user_id = ?";
-            st = conn.prepareStatement(sql4);
-            st.setString(1, userId);
-            int result = st.executeUpdate();
-
-            if(result > 0) {
-                conn.commit(); // 모든 삭제 확정
-                msg = "탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다. 🐿️";
-            } else {
-                conn.rollback(); // 실패하면 되돌리기
-                msg = "삭제할 회원 정보가 없습니다.";
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DBUtil.dbDisconnect(conn, st, null);
+    public void deleteTrades(Connection conn, String userId) throws SQLException {
+        String sql = "delete from trade where user_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ps.executeUpdate();
         }
-        return msg;
+    }
+
+    public void deletePortfolio(Connection conn, String userId) throws SQLException {
+        String sql = "delete from portfolio where user_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ps.executeUpdate();
+        }
+    }
+
+    public void deleteQuizLog(Connection conn, String userId) throws SQLException {
+        String sql = "delete from quiz_log where user_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ps.executeUpdate();
+        }
+    }
+
+    public int deleteUser(Connection conn, String userId) throws SQLException {
+        String sql = "delete from users where user_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            return ps.executeUpdate();
+        }
+    }
+
+    // 4. 캐쉬 업데이트
+    public int updateCash(Connection conn, String userId, int amount) throws SQLException {
+        String sql = "update users set cash = cash + ? where user_id = ?";
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setInt(1, amount);
+            st.setString(2, userId);
+            return st.executeUpdate();
+        }
     }
 }

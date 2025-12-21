@@ -18,6 +18,7 @@ public class MemberDTO {
 
     @Override
     public String toString() {
+        if (cash == null) return "보유 투자금 : 0";
         return "보유 투자금 : " + String.format("%,d", cash.toBigInteger());
     }
 }
