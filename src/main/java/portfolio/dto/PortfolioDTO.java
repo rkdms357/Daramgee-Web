@@ -11,11 +11,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Data
 public class PortfolioDTO {
-    @NonNull private int portfolioId;
-    private int quantity;
-    private BigDecimal avgPrice;
     @NonNull private String userId;
-    private String assetId;
+    @NonNull private String assetId;
+    @NonNull private int quantity;
+    @NonNull private BigDecimal avgPrice;
 
     // 화면 출력을 위해 추가
     private String name;              // 코인명

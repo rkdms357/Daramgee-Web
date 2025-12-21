@@ -1,40 +1,37 @@
 package portfolio.service;
 
-import asset.dto.AssetDTO;
-import asset.service.AssetService;
 import coin.service.CoinService;
 import portfolio.dao.PortfolioDAO;
 import portfolio.dto.PortfolioDTO;
+import util.DBUtil;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class PortfolioService {
     PortfolioDAO portfolioDAO = new PortfolioDAO();
     CoinService coinService = new CoinService();
-    AssetService assetService = new AssetService();
 
     public List<PortfolioDTO> getMyPortfolio(String userId) {
         // 1. DB에서 코인 목록 가져오기
-        List<PortfolioDTO> list = portfolioDAO.selectAll(userId);
-
-        Map<String, AssetDTO> assetMap = assetService.getAllAssets()
-                .stream()
-                .collect(Collectors.toMap(
-                        AssetDTO::getAssetId,
-                        a -> a
-                ));
+        List<PortfolioDTO> list;
+        Connection conn = null;
+        try {
+            conn = DBUtil.dbconnect();
+            conn.setAutoCommit(false);
+            list = portfolioDAO.selectAll(conn, userId);
+            conn.commit();  // 트랜잭션 커밋
+        } catch (SQLException e) {
+            if (conn != null) try { conn.rollback(); } catch(SQLException ex) {}
+            throw new RuntimeException(e);
+        } finally {
+            DBUtil.dbDisconnect(conn, null, null);
+        }
 
         // 2. 계산 (시세 조회 -> 수익률 계산)
         for (PortfolioDTO dto : list) {
-            // 코인명 세팅
-            AssetDTO asset = assetMap.get(dto.getAssetId());
-            if (asset != null) {
-                dto.setName(asset.getName());
-            }
-
             // 빗썸 현재가 조회
             BigDecimal currentPrice = coinService.getPrice(dto.getAssetId());
             BigDecimal quantity = new BigDecimal(dto.getQuantity());
